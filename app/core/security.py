@@ -24,10 +24,10 @@ def create_access_token(data: dict, expires_delta: timedelta = None) -> str:
     """
     to_encode = data.copy()
     # 토큰 만료 시간 설정
-    expire = datetime.utcnow() + (expires_delta if expires_delta else timedelta(minutes=settings.JWT_EXPIRE_MINUTES))
+    expire = datetime.utcnow() + (expires_delta if expires_delta else timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES))
     to_encode.update({"exp": expire})
-    # 토큰 생성: settings.JWT_SECRET_KEY와 HS256 알고리즘 사용
-    encoded_jwt = jwt.encode(to_encode, settings.JWT_SECRET_KEY, algorithm="HS256")
+    # 토큰 생성: settings.SECRET_KEY HS256 알고리즘 사용
+    encoded_jwt = jwt.encode(to_encode, settings.SECRET_KEY, algorithm="HS256")
     return encoded_jwt
 
 def decode_access_token(token: str) -> dict:
@@ -35,7 +35,7 @@ def decode_access_token(token: str) -> dict:
     JWT 토큰을 해독하여 데이터를 반환합니다.
     """
     try:
-        payload = jwt.decode(token, settings.JWT_SECRET_KEY, algorithms=["HS256"])
+        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
         return payload
     except jwt.PyJWTError:
         return None
